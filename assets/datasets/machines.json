@@ -1,0 +1,101 @@
+{
+  "Machines": [
+    {
+      "name": "B 1",
+      "title": "Beinstreckung",
+      "parameters": ["Lehne", "Beine"],
+      "affectedBodyParts": "<Bild>",
+      "description": "Stärkung der Oberschenkelmuskeln",
+      "tutorialVideoURL": "http://kieser.de"
+    },
+    {
+      "name": "B 7",
+      "title": "Beinbeugen",
+      "parameters": ["Lehne", "Beine"],
+      "affectedBodyParts": "<Bild>",
+      "description": "",
+      "tutorialVideoURL": ""
+    },
+    {
+      "name": "F 2.1",
+      "title": "Bauchmuskel",
+      "parameters": ["Polster", "Anschlag", "Füsse"],
+      "affectedBodyParts": "<Bild>",
+      "description": "",
+      "tutorialVideoURL": ""
+    },
+    {
+      "name": "F 3.1",
+      "title": "Untere Rückenpartie",
+      "parameters": ["Füsse", "Beine", "Hebel", "Start", "Anschlag", "Polster"],
+      "affectedBodyParts": "<Bild>",
+      "description": "",
+      "tutorialVideoURL": ""
+    },
+    {
+      "name": "C 1",
+      "title": "-",
+      "parameters": ["Sitz", "Lehne", "Arme"],
+      "affectedBodyParts": "<Bild>",
+      "description": "",
+      "tutorialVideoURL": ""
+    },
+    {
+      "name": "C 3",
+      "title": "-",
+      "parameters": [
+        "Sitz",
+        "Griffe",
+        "Hebel"
+      ],
+      "affectedBodyParts": "<Bild>",
+      "description": "",
+      "tutorialVideoURL": ""
+    },
+    {
+      "name": "C 7",
+      "title": "-",
+      "parameters": [
+        "Polster",
+        "Sitzpolster"
+      ],
+      "affectedBodyParts": "<Bild>",
+      "description": "",
+      "tutorialVideoURL": ""
+    },
+    {
+      "name": "D 5",
+      "title": "-",
+      "parameters": [
+        "Lehne",
+        "Arme",
+        "Sitzpolster"
+      ],
+      "affectedBodyParts": "<Bild>",
+      "description": "",
+      "tutorialVideoURL": ""
+    },
+    {
+      "name": "D 6",
+      "title": "-",
+      "parameters": [
+        "Sitz",
+        "Lehne",
+        "Griffe"
+      ],
+      "affectedBodyParts": "<Bild>",
+      "description": "",
+      "tutorialVideoURL": ""
+    },
+    {
+      "name": "H 1",
+      "title": "Bizeps",
+      "parameters": [
+        "Sitz"
+      ],
+      "affectedBodyParts": "<Bild>",
+      "description": "",
+      "tutorialVideoURL": ""
+    }
+  ]
+}
