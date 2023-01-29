@@ -5,6 +5,8 @@ from flet import (
     ElevatedButton,
     MainAxisAlignment,
     Page,
+    SnackBar,
+    Text,
     View,
     app,
     colors,
@@ -12,6 +14,7 @@ from flet import (
     WEB_BROWSER
 )
 
+from src.about import About
 from src.login import Login
 from src.trainings_plan import TrainingsPlan
 from src.helper import getAppBar
@@ -37,64 +40,30 @@ def main(page: Page):
     page.window_max_width=540
     page.window_height=1200
     page.window_width=540
-
+    # print("Initial: %s" % page.route)
     customerID = 19711
+    page.route="/about"
+
+    login=Login(page=page)
 
     def route_change(e):
-        page.views.clear()
-        page.views.append(
-            View(
-                route="/",
-                controls=[
-                    Container(
-                        width=page.window_width,
-                        height=page.window_height - 125,
-                        bgcolor=colors.WHITE10,
-                        content=Column(
-                        alignment=MainAxisAlignment.CENTER,
-                        horizontal_alignment=CrossAxisAlignment.CENTER,
-                        controls=[
-                            ElevatedButton(
-                                "Login",
-                                on_click=doLogin,
-                                bgcolor=colors.BLUE,
-                                color=colors.WHITE
-                            )
-                        ]
-                    ))
-                ],
-                appbar=getAppBar(APP_TITLE)
-            )
-        )
         if page.route == "/login":
-            login = Login(page)
-            page.views.append(
-                View(
-                    "/login",
-                    [
-                        login
-                    ],
-                    appbar=getAppBar("Login")
-                )
-            )
+            page.clean()
+            page.add(getAppBar(page, "Login", "/trainingsplan"))
+            page.add(login)
 
         if page.route == "/trainingsplan":
-            training = TrainingsPlan(page=page, customerID=customerID)
-            page.views.append(
-                View(
-                    "/trainingsplan",
-                    [
-                      training
-                    ],
-                    appbar=getAppBar("Dein Trainingsplan")
-                )
-            )
+            page.clean()
+            page.add(getAppBar(page, "Dein Trainingsplan", "/login"))
+            page.add(TrainingsPlan(page=page, customerID=customerID))
+            # page.go("/login")
 
-        # page.update()
+        if page.route == "/about":
+            page.clean()
+            page.add(getAppBar(page, APP_TITLE, "/login"))
+            page.add(About(page=page))
 
-    def doLogin(e):
-        login=Login(page)
-        page.go("/trainingsplan")
+        page.update()
 
     def view_pop(e):
         page.views.pop()
@@ -105,6 +74,7 @@ def main(page: Page):
     page.on_view_pop = view_pop
 
     page.go(page.route)
+    page.update()
 
 
-app(target=main, assets_dir="./assets", view=WEB_BROWSER)
+app(target=main, assets_dir="./assets")

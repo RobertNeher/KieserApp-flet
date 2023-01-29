@@ -5,6 +5,7 @@ from flet import (
     ControlEvent,
     FontWeight,
     Page,
+    SnackBar,
     Tab,
     Tabs,
     Text,
@@ -43,11 +44,6 @@ class TrainingsPlan(UserControl):
             "results": results
         }
         self.results.saveResults(resultJson)
-
-    def saveResult(self, e:ControlEvent):
-        # print(e.control.tabs[e.control.selected_index].content.content.duration)
-        pass
-
 
     def build(self):
         i = 0
@@ -88,7 +84,6 @@ class TrainingsPlan(UserControl):
             content=Tabs(
                 selected_index=0,
                 tabs=self.machineTabs,
-                on_change=self.saveResult
             ),
         )
 

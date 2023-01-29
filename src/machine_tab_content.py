@@ -38,9 +38,9 @@ class MachineTabContent(UserControl):
     def __init__(self, machineID, parameters, parameterValues, comments, movement, lastResults, saveResults, lastTab):
         super().__init__()
         self.today = datetime.today().strftime("%d.%m.%Y")
-        self.goal = lastResults["goalNext"]
-        self.duration = lastResults["duration"]
-        self.result = lastResults["doneToday"]
+        self.goal = 0 if (len(lastResults) == 0) else lastResults["goalNext"]
+        self.duration = 120 if (len(lastResults) == 0) else lastResults["duration"]
+        self.result = 0 if (len(lastResults) == 0) else lastResults["doneToday"]
         self.machines = Machine()
         self.machineID = machineID
         self.machineDetails = self.machines.lookUp(machineID=machineID)

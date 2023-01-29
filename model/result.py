@@ -13,7 +13,20 @@ class Result:
         self.customerID = customerID
         self.timeStamp = datetime.today().strftime("%Y-%m-%d")
         self.resultsDataset = open(Path(os.curdir, DATASET_FOLDER, RESULTS_DATASET), "r+", encoding="UTF-8")
-        self.results = json.load(self.resultsDataset)
+
+        try:
+            self.results = json.load(self.resultsDataset)
+        except:
+            self.resultsDataset = open(Path(os.curdir, DATASET_FOLDER, RESULTS_DATASET), "w", encoding="UTF-8")
+            self.results = {
+                "Results": [
+                    {
+                        "customerID": self.customerID,
+                        "trainings": []
+                    }
+                ]
+            }
+            self.resultsDataset.flush()
 
         for customerResults in self.results["Results"]:
             if customerResults["customerID"] == self.customerID:
@@ -47,21 +60,29 @@ class Result:
         else:
             trainingResults = self.latest()
 
-        for trainingResult in trainingResults["results"]:
-                if trainingResult["machineID"] == machineID:
-                    return trainingResult
+        if len(trainingResults) > 0:
+            for trainingResult in trainingResults["results"]:
+                    if trainingResult["machineID"] == machineID:
+                        return trainingResult
+        # else:
+        #     return {
+        #         "trainingDate": self.timeStamp,
+        #         "results": []
+        #     }
 
-        return None
+        return []
 
     def latest(self):
         trainingData = self.all()
-        trainingData.reverse()
-        return trainingData[0]
+
+        if len(trainingData) > 0:
+            trainingData.reverse()
+            return trainingData[0]
+        else:
+            return trainingData
 
     def saveResults(self, resultSet):
-        print(resultSet)
-
-        if len(self.plan["machines"]) != len(resultSet):
+        if len(self.plan["machines"]) != len(resultSet["results"]):
             return False
 
         for customer in self.results["Results"]:
@@ -69,8 +90,8 @@ class Result:
                 customer["trainings"].append(resultSet)
                 self.resultsDataset.seek(0)
                 self.resultsDataset.truncate(0)
-                print(resultSet)
                 json.dump(self.results, self.resultsDataset)
+                self.resultsDataset.flush()
                 return True
 
 #-------------------------- TEST -------------------------#

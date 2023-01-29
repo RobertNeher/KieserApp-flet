@@ -5,6 +5,8 @@ from flet import (
     FontWeight,
     Icon,
     IconButton,
+    NavigationBar,
+    NavigationDestination,
     Page,
     Text,
     TextField,
@@ -17,11 +19,15 @@ from flet import (
     margin,
 )
 
-def getAppBar(title):
+def getAppBar(page: Page, title:str, backRoute:str):
+    def onClick(e):
+        page.go(backRoute)
+
     return AppBar(
-            # leading=IconButton(icons.APPS_SHARP),
-            # leading_width=50,
-            # automatically_imply_leading=True,
+            leading=IconButton(
+                icons.ARROW_BACK, on_click=onClick),
+            leading_width=40,
+            automatically_imply_leading=True,
             title=Text(
                 title,
                 style=TextThemeStyle(TextThemeStyle.HEADLINE_MEDIUM),

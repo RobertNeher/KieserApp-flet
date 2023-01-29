@@ -14,7 +14,7 @@ from flet import (
 
 def trainingResults(lastResults, durationEdit, resultEdit, goalEdit):
         def copyValue(e):
-            if (goalField.value == None) or (goalField.value == ""):
+            if (goalField.value) == '' or int(goalField.value) == 0:
                 goalField.value = e.control.value
                 goalField.update()
 
@@ -39,13 +39,14 @@ def trainingResults(lastResults, durationEdit, resultEdit, goalEdit):
             # ),
             on_change=durationEdit,
             width=150,
-            value=lastResults["duration"]
+            value="120" if (len(lastResults) == 0) else str(lastResults["duration"])
         )
         resultField=TextField(
             color=colors.WHITE,
             border=InputBorder.UNDERLINE,
             border_color=colors.WHITE,
             focused_color=colors.WHITE,
+            autofocus=True,
             # # TODO: Activate, when label color = border_color. Bug in Flet (0.3.2)
             # # label="Dauer",
             # # TODO: Deactivate, when label color = border_color. Bug in Flet (0.3.2)
@@ -63,7 +64,7 @@ def trainingResults(lastResults, durationEdit, resultEdit, goalEdit):
             on_change=resultEdit,
             on_blur=copyValue,
             width=150,
-            value=lastResults["doneToday"]
+            value="0" if (len(lastResults) == 0) else str(lastResults["doneToday"])
         )
 
         goalField=TextField(
@@ -87,7 +88,7 @@ def trainingResults(lastResults, durationEdit, resultEdit, goalEdit):
             # ),
             on_change=goalEdit,
             width=150,
-            value=lastResults["goalNext"]
+            value="0" if (len(lastResults) == 0) else str(lastResults["goalNext"])
         )
 
         resultsColumns = [
