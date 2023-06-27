@@ -8,16 +8,13 @@ from flet import (
     DataTable,
     Divider,
     Dropdown,
-    ElevatedButton,
     FontWeight,
-    InputBorder,
     MainAxisAlignment,
     Page,
     Row,
     Tab,
     Tabs,
     Text,
-    TextField,
     UserControl,
     alignment,
     colors,
@@ -32,7 +29,9 @@ class ShowTrainingData(UserControl):
         self.backRoute = backRoute
         self.results = Result(customer_id=customerID)
         self.trainingDates=self.results.trainingdates(latest=False)
-
+        self.results_tabs = []
+        self.resultsColumns = []
+        self.resultRows = []
         self.dropDownOptions = []
         for trainingDate in self.trainingDates:
             date = datetime.strptime(trainingDate['training_date'], "%Y-%m-%d")
@@ -46,15 +45,15 @@ class ShowTrainingData(UserControl):
             options=self.dropDownOptions,
         )
 
-    def resultTabs(self):
-        self.resultTabs = []
+    def resultsTabs(self):
+        self.results_tabs = []
 
         for training_date in self.trainingDates:
-            self.resultTabs.append(
+            self.results_tabs.append(
                 self.resultTabContent(trainingDate=training_date)
             )
 
-        return self.resultTabs
+        return self.results_tabs
 
     def resultTabContent(self, trainingDate):
         return Tab(
@@ -62,7 +61,7 @@ class ShowTrainingData(UserControl):
             text=Text(
                 trainingDate,
                 size=18,
-                FontWeight=FontWeight.BOLD,
+                weight=FontWeight.BOLD,
                 color=colors.WHITE,
                 bgcolor=colors.BLUE,
             )
@@ -102,33 +101,33 @@ class ShowTrainingData(UserControl):
                         content=Text(
                             machine["machine_id"],
                             size=14,
-                            FontWeight = FontWeight.NORMAL
+                            weight=FontWeight.NORMAL
                         ),
                     ),
                     DataCell(
                         content=Text(
                             machine["duration"],
                             size=14,
-                            FontWeight = FontWeight.NORMAL
+                            weight=FontWeight.NORMAL
                         ),
                     ),
                     DataCell(
                         content=Text(
                             machine["weight_done"],
                             size=14,
-                            FontWeight = FontWeight.NORMAL
+                            weight=FontWeight.NORMAL
                         ),
                     ),
                     DataCell(
                         content=Text(
                             machine["weight_planned"],
                             size=14,
-                            FontWeight = FontWeight.NORMAL
+                            weight=FontWeight.NORMAL
                         ),
                     )
                 ]
             ))
-        
+
         return DataTable(
             columns=self.resultsColumns,
             rows=self.resultRows,
@@ -137,7 +136,7 @@ class ShowTrainingData(UserControl):
     def routeBack(self, e):
         self.page.go(self.backRoute)
         return
-    
+
     def setDate(self, e):
         self.selectedDate = e.control.value
 
@@ -172,7 +171,7 @@ class ShowTrainingData(UserControl):
                         ),
                         Tabs(
                             selected_index = 0,
-                            tabs=self.resultTabs,
+                            tabs=self.results_tabs,
                         )
                     ]
                 )
