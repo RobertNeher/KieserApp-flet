@@ -205,7 +205,7 @@ class DBConnection:
                 customer_id = result["customerID"]
 
                 for training in result["trainings"]:
-                    training_date = datetime.datetime.strptime(training["trainingDate"], "%Y-%m-%d")
+                    training_date = datetime.strptime(training["trainingDate"], "%Y-%m-%d")
 
                     for result in training["results"]:
                         self.connection.execute(f"""INSERT INTO {RESULT_TABLE} (
