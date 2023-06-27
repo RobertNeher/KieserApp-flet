@@ -23,7 +23,7 @@ def trainingResults(lastResults, durationEdit, weightDoneEdit, weightPlannedEdit
         saveResults(durationField.value, weightDoneField.value, weightPlannedField.value)
 
     prefs = Preferences()
-    print(lastResults)
+
     durationField=TextField(
         color=colors.WHITE,
         border=InputBorder.UNDERLINE,

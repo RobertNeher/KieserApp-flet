@@ -68,7 +68,7 @@ class Result:
             result_rows = self.db.connection.execute(f"""SELECT *
                         FROM {src.persistence.RESULT_TABLE}
                         WHERE customer_id = {self.customer_id}
-                        AND training_date = '{latest_training}'
+                        AND training_date LIKE '{latest_training}%'
                         AND machine_id = '{machine_id}'
                         """)
 
