@@ -10,17 +10,23 @@ from flet import (
     icons,
 )
 
-def kieserAppBar(page:Page, title:str, backRoute:str):
-    def onClick(e):
-        page.go(backRoute)
+def kieserAppBar(page:Page, title, backRoute):
+    def return2Previous(e):
+        page.route=backRoute
+        page.update()
     def openEditPreferences(e):
         page.go("/editPreferences")
+        page.update()
     def openTrainingsOverview(e):
         page.go("/trainingsOverview")
+        page.update()
+    def openAbout(e):
+        page.go("/about")
+        page.update()
 
     return AppBar(
         leading=IconButton(
-            icons.ARROW_BACK, on_click=onClick),
+            icons.ARROW_BACK, on_click=return2Previous),
         leading_width=40,
         automatically_imply_leading=True,
         title=Text(
@@ -35,10 +41,16 @@ def kieserAppBar(page:Page, title:str, backRoute:str):
             PopupMenuButton(
                 items=[
                     PopupMenuItem(
-                        text="Einstellungen", on_click=openEditPreferences
+                        text="Einstellungen",
+                        on_click=openEditPreferences
                     ),
                     PopupMenuItem(
-                        text="Trainings-\nübersicht", on_click=openTrainingsOverview
+                        text="Trainings-\nübersicht",
+                        on_click=openTrainingsOverview
+                    ),
+                    PopupMenuItem(
+                        text="Über 'KieserApp'",
+                        on_click=openAbout
                     ),
                 ]
             )

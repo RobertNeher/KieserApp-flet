@@ -1,8 +1,3 @@
-import os
-import sys
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../model')))
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
-
 from flet import (
     Container,
     FontWeight,
@@ -22,7 +17,7 @@ from src.machine_tab_content import MachineTabContent
 from src.helper import extract_list
 
 class TrainingsPlan(UserControl):
-    def __init__(self, page: Page, customer_id):
+    def __init__(self, page, customer_id):
         super().__init__()
         self.customer_id = customer_id
         self.machineTabs = []
@@ -32,14 +27,9 @@ class TrainingsPlan(UserControl):
         self.prefs = Preferences()
         self.tabs = []
 
-
     def saveResults(self, e):
         for machineTab in self.machineTabs:
             print(machineTab.weightPlannedEdit)
-
-    # def onChange(self, e):
-    #     tab = self.machineTabs[e.control.selected_index]
-    #     print(e.control.selected_index)
 
     def triggerAutoForward(self, e):
         if self.prefs.auto_forward:

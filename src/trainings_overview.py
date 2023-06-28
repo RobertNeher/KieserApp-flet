@@ -21,13 +21,12 @@ from flet import (
 )
 from model.result import Result
 
-class ShowTrainingData(UserControl):
-    def __init__(self, page: Page, backRoute, customerID):
+class TrainingsOverview(UserControl):
+    def __init__(self, page, customer_id):
         super().__init__()
         self.page = page
-        self.customerID = customerID
-        self.backRoute = backRoute
-        self.results = Result(customer_id=customerID)
+        self.customerID = customer_id
+        self.results = Result(customer_id=self.customerID)
         self.trainingDates=self.results.trainingdates(latest=False)
         self.results_tabs = []
         self.resultsColumns = []

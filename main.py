@@ -7,7 +7,7 @@ from flet import (
     app,
     colors
 )
-from src.show_training_data import ShowTrainingData
+from src.trainings_overview import TrainingsOverview
 from src.about import About
 from src.login import Login
 from src.trainings_plan import TrainingsPlan
@@ -37,7 +37,7 @@ def main(page: Page):
     page.window_max_width=500
     page.window_height=1200
     page.window_width=500
-    page.route="/about"
+    page.route="/trainingsplan"
 
     def setCustomerID(customerID):
         customer_id = customerID
@@ -50,7 +50,7 @@ def main(page: Page):
                     "/",
                     [
                         kieserAppBar(page, "Login", "/trainingsplan"),
-                        Login(page=page, setCustomerID = setCustomerID)
+                        Login(page=page, setCustomerID=setCustomerID)
                     ]
                 )
             )
@@ -61,11 +61,12 @@ def main(page: Page):
                     "/trainingsplan",
                     [
                         kieserAppBar(page, "Dein Trainingsplan", "/login"),
-                        TrainingsPlan(page, customer_id=prefs.customer_id)
+                        About(page)
+                        # TrainingsPlan(page, customer_id=19711)
+                        # TrainingsOverview(page, customer_id=19711)
                     ]
                 )
             )
-
 
         if page.route == "/editPreferences":
             page.views.append(
@@ -73,7 +74,7 @@ def main(page: Page):
                     "/editPreferences",
                     [
                         kieserAppBar(page, "Einstellungen", "/login"),
-                        EditPreferences(page, backRoute="/login")
+                        EditPreferences(page, "/login")
                     ]
                 )
             )
@@ -84,12 +85,10 @@ def main(page: Page):
                     "/trainingsOverview",
                     [
                         kieserAppBar(page, "Letzte Trainings", "/login"),
-                        ShowTrainingData(page=page, backRoute="/login", customerID=19711)
+                        TrainingsOverview(page, customer_id=19711)
                     ]
                 )
             )
-
-
 
         if page.route == "/about":
             page.views.append(
@@ -101,8 +100,7 @@ def main(page: Page):
                     ]
                 )
             )
-
-        page.update()
+        page.go(page.route)
 
     def view_pop():
         page.views.pop()
