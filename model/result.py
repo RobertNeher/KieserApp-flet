@@ -36,14 +36,15 @@ class Result:
         else:
             return None
 
-    def byDate(self, trainingDate: str):
+    def byDate(self, trainingDate):
         result_rows = self.db.connection.execute(f"""SELECT
                     machine_id,
                     duration,
-                    weightDone,
-                    weightPlanned
+                    weight_done,
+                    weight_planned
+                    FROM {src.persistence.RESULT_TABLE}
                     WHERE customer_id = {self.customer_id}
-                    AND training_date LIKE {trainingDate[0:10]}%
+                    AND training_date LIKE "{trainingDate[0:10]}%"
                     ORDER BY machine_id
                     """)
 

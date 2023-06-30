@@ -37,7 +37,7 @@ def main(page: Page):
     page.window_max_width=500
     page.window_height=1200
     page.window_width=500
-    page.route="/trainingsplan"
+    page.route="/login"
 
     def setCustomerID(customerID):
         customer_id = customerID
@@ -61,8 +61,7 @@ def main(page: Page):
                     "/trainingsplan",
                     [
                         kieserAppBar(page, "Dein Trainingsplan", "/login"),
-                        About(page)
-                        # TrainingsPlan(page, customer_id=19711)
+                        TrainingsPlan(page, customer_id=19711)
                         # TrainingsOverview(page, customer_id=19711)
                     ]
                 )

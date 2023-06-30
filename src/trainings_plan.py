@@ -75,7 +75,10 @@ class TrainingsPlan(UserControl):
             )
             i += 1
 
-        self.tabs = Tabs(
+        return Container(
+            height=900,
+            padding=0,
+            content=Tabs(
                 selected_index=0,
                 tabs=self.machineTabs,
                 indicator_color=colors.RED,
@@ -86,10 +89,6 @@ class TrainingsPlan(UserControl):
                 divider_color=colors.BLACK
             )
 
-        return Container(
-            height=900,
-            padding=0,
-            content=self.tabs
         )
 
 

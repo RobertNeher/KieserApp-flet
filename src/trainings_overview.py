@@ -11,13 +11,16 @@ from flet import (
     FontWeight,
     MainAxisAlignment,
     Page,
+    Ref,
     Row,
+    ScrollMode,
     Tab,
     Tabs,
     Text,
     UserControl,
     alignment,
     colors,
+    dropdown
 )
 from model.result import Result
 
@@ -27,49 +30,27 @@ class TrainingsOverview(UserControl):
         self.page = page
         self.customerID = customer_id
         self.results = Result(customer_id=self.customerID)
-        self.trainingDates=self.results.trainingdates(latest=False)
-        self.results_tabs = []
         self.resultsColumns = []
         self.resultRows = []
         self.dropDownOptions = []
-        for trainingDate in self.trainingDates:
-            date = datetime.strptime(trainingDate['training_date'], "%Y-%m-%d")
-            self.dropDownOptions.append(
-                datetime.strftime(date, "%d. %B %Y")
-            )
-            self.dropDownOptions.append("all")
+        self.trainingDates = self.results.trainingdates(latest=False)
 
-        self.dateSelection=Dropdown(
-            width=100,
-            options=self.dropDownOptions,
-        )
+        if len(self.trainingDates) > 0:
+            for trainingDate in self.trainingDates:
+                date = datetime.strptime(trainingDate['training_date'], "%Y-%m-%d")
+                self.dropDownOptions.append(
+                    dropdown.Option(datetime.strftime(date, "%d. %B %Y"))
+                )
 
-    def resultsTabs(self):
-        self.results_tabs = []
+            self.selectedDate = self.dropDownOptions[0].key
+            self.resultTable = self.result_table(self.selectedDate)
+        else:
+            self.dropDownOptions.append(dropdown.Option("<Keine Ergebnisse>s"))
+        
 
-        for training_date in self.trainingDates:
-            self.results_tabs.append(
-                self.resultTabContent(trainingDate=training_date)
-            )
-
-        return self.results_tabs
-
-    def resultTabContent(self, trainingDate):
-        return Tab(
-            content=self.resultTable(trainingDate=trainingDate),
-            text=Text(
-                trainingDate,
-                size=18,
-                weight=FontWeight.BOLD,
-                color=colors.WHITE,
-                bgcolor=colors.BLUE,
-            )
-        )
-
-    def resultTable(self, trainingDate):
-        trainingData = self.results.byDate(trainingDate=trainingDate)
-
-        self.resultsColumns = [
+    def result_table(self, trainingsDate):
+        results = Result(customer_id=self.customerID)
+        resultColumns = [
             DataColumn(
                 label=Text(
                     "Gerät",
@@ -91,10 +72,12 @@ class TrainingsOverview(UserControl):
                 )
             ),
         ]
-        self.resultRows = []
 
+        resultRows = []
+        trainingData = results.byDate(trainingDate=datetime.strftime(datetime.strptime(trainingsDate, "%d. %B %Y"), "%Y-%m-%d"))
+        print(len(trainingData))
         for machine in trainingData:
-            self.resultRows.append(DataRow(
+            resultRows.append(DataRow(
                 cells=[
                     DataCell(
                         content=Text(
@@ -126,52 +109,45 @@ class TrainingsOverview(UserControl):
                     )
                 ]
             ))
-
         return DataTable(
-            columns=self.resultsColumns,
-            rows=self.resultRows,
+            columns=resultColumns,
+            rows=resultRows,
         )
-
-    def routeBack(self, e):
-        self.page.go(self.backRoute)
-        return
 
     def setDate(self, e):
         self.selectedDate = e.control.value
-
-    def build(self):
-        return Container(
-                width=500,
-                height=600,
-                bgcolor=colors.WHITE,
-                content=Column(
-                    alignment=MainAxisAlignment.CENTER,
-                    controls=[
-                        Row(
-                            alignment=alignment.center_left,
-                            controls=[
-                                Text(
-                                    "Datum des\nTrainings",
-                                    size=18,
-                                    weight=FontWeight.BOLD,
-                                    bgcolor=colors.WHITE,
-                                    color=colors.BLUE,
-                                ),
-                                Dropdown(
-                                    alignment=alignment.top_center,
-                                    options=self.dropDownOptions,
-                                    on_change=self.setDate
-                                ),
-                            ]
-                        ),
-                        Divider(
-                            color=colors.BLUE,
-                            thickness=2,
-                        ),
-                        Tabs(
-                            selected_index = 0,
-                            tabs=self.results_tabs,
-                        )
-                    ]
-                )
+        self.resultTable = self.result_table(self.selectedDate)
+        self.page.clean()
+        self.page.add(
+            Row(
+                alignment=alignment.center_left,
+                controls=[
+                    Text(
+                        "Datum des Trainings",
+                        size=16,
+                        weight=FontWeight.BOLD,
+                        bgcolor=colors.WHITE,
+                        color=colors.BLUE,
+                    ),
+                    Dropdown(
+                        value=self.dropDownOptions[0].key,
+                        width=170,
+                        options=self.dropDownOptions,
+                        on_change=self.setDate
+                    )
+                ]
+            ),
+        )
+        self.page.add(
+            Divider(
+                color=colors.BLUE,
+                thickness=2,
             )
+        )
+        self.page.add(
+            self.resultTable
+        )
+    
+    def build(self):
+        return self.page
+    
