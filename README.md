@@ -5,7 +5,7 @@ Trainings companion for Kieser Training
 Using Flet, instead of pure Flutter/Dart.
 
 # Prerequisites
-Python Flet: ``pip install flet``<br/>
+Python Flet: ``pip install flet`` (https://pub.dev/documentation/flet/latest/index.html)<br/>
 Datetime: ``pip install datetime``
 
 # Folder structure
