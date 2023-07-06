@@ -81,6 +81,14 @@ class Result:
         else:
             return None
 
+    def deleteResults(self, ymdDateString):
+        print(ymdDateString)
+        # self.db.connection.execute(f"""
+        #         DELETE FROM {src.persistence.RESULT_TABLE}
+        #          {f"WHERE training_date LIKE '{ymdDateString}%'" if ymdDateString != "Alle" else ""}
+        # """)
+        # self.db.connection.commit()
+
 
     def saveResults(self, machineID, duration, weightDone, weightPlanned):
         self.db.connection.execute(f"""

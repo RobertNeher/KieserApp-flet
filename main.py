@@ -33,11 +33,11 @@ def main(page: Page):
         use_material3=True
     )
     page.title = APP_TITLE
-    page.window_max_height= 1200
+    page.window_max_height= 1000
     page.window_max_width=500
-    page.window_height=1200
+    page.window_height=1000
     page.window_width=500
-    page.route="/login"
+    page.route="/trainingsOverview"
 
     def setCustomerID(customerID):
         customer_id = customerID
