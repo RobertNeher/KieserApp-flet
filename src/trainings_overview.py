@@ -20,18 +20,11 @@ from flet import (
     Text,
     UserControl,
     alignment,
+    border,
     colors,
     dropdown
 )
 from model.result import Result
-
-HEADER_BG_COLOR = colors.BLACK12
-HEADER_HEIGHT = 50
-ROW_HEIGHT = 20
-COLUMN_SPACE = 15
-WIDTH_MACHINE_COLUMN = 80
-WIDTH_DURATION_COLUMN = 60
-WIDTH_WEIGHT_COLUMN = 110
 
 class TrainingsOverview(UserControl):
     def __init__(self, page, customer_id):
@@ -39,6 +32,8 @@ class TrainingsOverview(UserControl):
         self.page = page
         self.customerID = customer_id
         self.results = Result(customer_id=self.customerID)
+        # self.resultsColumns = []
+        # self.resultRows = []
         self.dropDownOptions = []
         self.trainingDates = self.results.trainingdates(latest=False)
 
@@ -50,178 +45,122 @@ class TrainingsOverview(UserControl):
                 )
 
             self.selectedDate = self.dropDownOptions[0].key
+            self.resultsTable = self.result_table(self.selectedDate)
         else:
             self.dropDownOptions.append(dropdown.Option("<Keine Daten>"))
 
-        self.result_header = Row(
-            spacing=0,
-            controls=[
-                Container(
-                    width=WIDTH_MACHINE_COLUMN,
-                    height=HEADER_HEIGHT,
-                    alignment=alignment.center,
-                    bgcolor=HEADER_BG_COLOR,
-                    content=Text(
-                        "Gerät",
-                        size=14,
-                        weight=FontWeight.BOLD,
-                        color=colors.BLACK
-                    )
-                ),
-                Container(
-                    width=COLUMN_SPACE * 2,
-                    height=HEADER_HEIGHT,
-                    bgcolor=HEADER_BG_COLOR
-                ),
-                Container(
-                    width=WIDTH_DURATION_COLUMN,
-                    height=HEADER_HEIGHT,
-                    alignment=alignment.center_right,
-                    bgcolor=HEADER_BG_COLOR,
-                    content=Text(
-                        "Dauer",
-                        size=14,
-                        weight=FontWeight.BOLD,
-                        color=colors.BLACK
-                    )
-                ),
-                Container(
-                    width=COLUMN_SPACE * 2,
-                    bgcolor=HEADER_BG_COLOR,
-                    height=HEADER_HEIGHT
-                ),
-                Container(
-                    width=WIDTH_WEIGHT_COLUMN,
-                    height=HEADER_HEIGHT,
-                    alignment=alignment.center_right,
-                    bgcolor=HEADER_BG_COLOR,
-                    content=Text(
-                        "aufgelegtes\nGewicht",
-                        size=14,
-                        weight=FontWeight.BOLD,
-                        color=colors.BLACK
-                    )
-                ),
-                Container(
-                    width=COLUMN_SPACE * 2,
-                    height=HEADER_HEIGHT,
-                    bgcolor=HEADER_BG_COLOR
-                ),
-                Container(
-                    width=WIDTH_WEIGHT_COLUMN,
-                    height=HEADER_HEIGHT,
-                    alignment=alignment.center_right,
-                    bgcolor=HEADER_BG_COLOR,
-                    content=Text(
-                        "geplantes\nGewicht",
-                        size=14,
-                        weight=FontWeight.BOLD,
-                        color=colors.BLACK
-                    )
-                ),
-            ]
-        )
-        self.resultRows = []
+    def formatDate(self, dBYdate):
+        return datetime.strftime(datetime.strptime(dBYdate, "%d. %B %Y"), "%Y-%m-%d")
 
-    def result_rows(self, trainingsDate):
-        resultRows = ListView(expand=1, spacing=10, padding=20, auto_scroll=False)
+    def result_table(self, trainingsDate):
+        resultColumns = [
+            DataColumn(
+                label=Text(
+                    "Gerät",
+                    size=14,
+                    weight=FontWeight.BOLD,
+                    color=colors.BLACK
+                )
+            ),
+            DataColumn(
+                numeric=True,
+                label=Text(
+                    "Dauer",
+                    size=14,
+                    weight=FontWeight.BOLD,
+                    color=colors.BLACK
+                )
+            ),
+            DataColumn(
+                numeric=True,
+                label=Text(
+                    "aufgelegtes\nGewicht",
+                    size=14,
+                    weight=FontWeight.BOLD,
+                    color=colors.BLACK
+                )
+            ),
+            DataColumn(
+                numeric=True,
+                label=Text(
+                    "geplantes\nGewicht",
+                    size=14,
+                    weight=FontWeight.BOLD,
+                    color=colors.BLACK
+                )
+            ),
+        ]
+
+        resultRows = []
         trainingData = self.results.byDate(trainingDate=self.formatDate(trainingsDate))
 
+        print(self.selectedDate, len(trainingData))
 
         for machine in trainingData:
-            resultRows.controls.append(Row(
-                spacing=0,
-                controls=[
-                    Container(
-                        width=WIDTH_MACHINE_COLUMN,
-                        height=ROW_HEIGHT,
-                        alignment=alignment.center_left,
-                        bgcolor=colors.WHITE,
+            resultRows.append(DataRow(
+                cells=[
+                    DataCell(
                         content=Text(
                             machine["machine_id"],
                             size=14,
-                            weight=FontWeight.NORMAL,
-                            color=colors.BLACK
-                        )
+                            weight=FontWeight.NORMAL
+                        ),
                     ),
-                    Container(
-                        width=COLUMN_SPACE,
-                        height=ROW_HEIGHT,
-                        bgcolor=colors.WHITE
-                    ),
-                    Container(
-                        width=WIDTH_DURATION_COLUMN,
-                        height=ROW_HEIGHT,
-                        alignment=alignment.center_right,
-                        bgcolor=colors.WHITE,
+                    DataCell(
                         content=Text(
                             machine["duration"],
                             size=14,
-                            weight=FontWeight.NORMAL,
-                            color=colors.BLACK
-                        )
+                            weight=FontWeight.NORMAL
+                        ),
                     ),
-                    Container(
-                        width=COLUMN_SPACE,
-                        height=ROW_HEIGHT,
-                        bgcolor=colors.WHITE
-                    ),
-                    Container(
-                        width=WIDTH_WEIGHT_COLUMN,
-                        alignment=alignment.center_right,
-                        bgcolor=colors.WHITE,
+                    DataCell(
                         content=Text(
                             machine["weight_done"],
                             size=14,
                             weight=FontWeight.NORMAL
                         ),
                     ),
-                    Container(
-                        width=COLUMN_SPACE,
-                        height=ROW_HEIGHT,
-                        bgcolor=colors.WHITE
-                    ),
-                    Container(
-                        width=WIDTH_WEIGHT_COLUMN,
-                        height=ROW_HEIGHT,
-                        alignment=alignment.center_right,
-                        bgcolor=colors.WHITE,
+                    DataCell(
                         content=Text(
                             machine["weight_planned"],
                             size=14,
                             weight=FontWeight.NORMAL
                         ),
-                    ),
-                ]))
+                    )
+                ]
+            ))
 
-            resultRows.controls.append(
-                Divider(
-                    color = HEADER_BG_COLOR,
-                    thickness = 1
-                )
-            )
-
-        return Container(
-            height=600,
-            content=resultRows
+        return DataTable(
+            bgcolor=colors.WHITE,
+            border_radius=10,
+            vertical_lines=border.BorderSide(1, colors.BLACK12),
+            horizontal_lines=border.BorderSide(1, colors.BLACK12),
+            sort_column_index=0,
+            sort_ascending=True,
+            heading_row_color={"hovered": colors.BLACK12},
+            heading_row_height=60,
+            data_row_color={"hovered": "0x30FF0000"},
+            divider_thickness=1,
+            column_spacing=30,
+            columns=resultColumns,
+            rows=resultRows,
         )
-
-    def formatDate(self, dBYdate):
-        return datetime.strftime(datetime.strptime(dBYdate, "%d. %B %Y"), "%Y-%m-%d")
 
     def setDate(self, e):
         self.selectedDate = e.control.value
-        self.resultRows = self.result_rows(trainingsDate=self.selectedDate)
-        self.page.views[1].update()
+        self.resultsTable = self.result_table(e.control.value)
+        self.page.update()
 
     def deleteResults(self, e):
         self.results.deleteResults(self.selectedDate)
 
     def build(self):
-        print("build")
-        self.resultRows = self.result_rows(trainingsDate=self.selectedDate)
+        self.resultsTable = self.result_table(self.selectedDate)
 
         return Column(
+            alignment=MainAxisAlignment.START,
+            # horizontal_alignment=CrossAxisAlignment.START,
+            # scroll=ScrollMode.AUTO,
             controls=[
                 Row(
                     alignment=alignment.center_left,
@@ -245,14 +184,13 @@ class TrainingsOverview(UserControl):
                     color=colors.BLUE,
                     thickness=1,
                 ),
-                self.result_header,
+                self.resultsTable,
                 Divider(
                     color=colors.BLUE,
                     thickness=1,
                 ),
-                self.resultRows,
                 Row(
-                    alignment=MainAxisAlignment.CENTER,
+                    alignment=MainAxisAlignment.END,
                     controls=[
                         Container(expand=1),
                         Container(
