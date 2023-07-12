@@ -37,7 +37,7 @@ def main(page: Page):
     page.window_max_width=500
     page.window_height=1000
     page.window_width=500
-    page.route="/trainingsOverview"
+    page.route="/login"
 
     def setCustomerID(customerID):
         customer_id = customerID

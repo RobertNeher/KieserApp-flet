@@ -18,6 +18,7 @@ from flet import (
     Row,
     ScrollMode,
     Text,
+    TextStyle,
     UserControl,
     alignment,
     border,
@@ -32,8 +33,6 @@ class TrainingsOverview(UserControl):
         self.page = page
         self.customerID = customer_id
         self.results = Result(customer_id=self.customerID)
-        # self.resultsColumns = []
-        # self.resultRows = []
         self.dropDownOptions = []
         self.trainingDates = self.results.trainingdates(latest=False)
 
@@ -45,164 +44,158 @@ class TrainingsOverview(UserControl):
                 )
 
             self.selectedDate = self.dropDownOptions[0].key
-            self.resultsTable = self.result_table(self.selectedDate)
+            self.resultRows = []
         else:
             self.dropDownOptions.append(dropdown.Option("<Keine Daten>"))
 
-    def formatDate(self, dBYdate):
-        return datetime.strftime(datetime.strptime(dBYdate, "%d. %B %Y"), "%Y-%m-%d")
-
-    def result_table(self, trainingsDate):
-        resultColumns = [
+        self.resultColumns = [
             DataColumn(
                 label=Text(
                     "Gerät",
-                    size=14,
-                    weight=FontWeight.BOLD,
-                    color=colors.BLACK
                 )
             ),
             DataColumn(
                 numeric=True,
                 label=Text(
                     "Dauer",
-                    size=14,
-                    weight=FontWeight.BOLD,
-                    color=colors.BLACK
                 )
             ),
             DataColumn(
                 numeric=True,
                 label=Text(
                     "aufgelegtes\nGewicht",
-                    size=14,
-                    weight=FontWeight.BOLD,
-                    color=colors.BLACK
                 )
             ),
             DataColumn(
                 numeric=True,
                 label=Text(
                     "geplantes\nGewicht",
-                    size=14,
-                    weight=FontWeight.BOLD,
-                    color=colors.BLACK
                 )
             ),
         ]
 
-        resultRows = []
+    def formatDate(self, dBYdate):
+        return datetime.strftime(datetime.strptime(dBYdate, "%d. %B %Y"), "%Y-%m-%d")
+
+    def result_rows(self, trainingsDate):
+        self.resultRows = []
         trainingData = self.results.byDate(trainingDate=self.formatDate(trainingsDate))
 
-        print(self.selectedDate, len(trainingData))
-
         for machine in trainingData:
-            resultRows.append(DataRow(
+            self.resultRows.append(DataRow(
                 cells=[
                     DataCell(
                         content=Text(
                             machine["machine_id"],
-                            size=14,
-                            weight=FontWeight.NORMAL
                         ),
                     ),
                     DataCell(
                         content=Text(
                             machine["duration"],
-                            size=14,
-                            weight=FontWeight.NORMAL
                         ),
                     ),
                     DataCell(
                         content=Text(
                             machine["weight_done"],
-                            size=14,
-                            weight=FontWeight.NORMAL
                         ),
                     ),
                     DataCell(
                         content=Text(
                             machine["weight_planned"],
-                            size=14,
-                            weight=FontWeight.NORMAL
                         ),
                     )
                 ]
             ))
 
-        return DataTable(
-            bgcolor=colors.WHITE,
-            border_radius=10,
-            vertical_lines=border.BorderSide(1, colors.BLACK12),
-            horizontal_lines=border.BorderSide(1, colors.BLACK12),
-            sort_column_index=0,
-            sort_ascending=True,
-            heading_row_color={"hovered": colors.BLACK12},
-            heading_row_height=60,
-            data_row_color={"hovered": "0x30FF0000"},
-            divider_thickness=1,
-            column_spacing=30,
-            columns=resultColumns,
-            rows=resultRows,
-        )
+        return self.resultRows
 
     def setDate(self, e):
         self.selectedDate = e.control.value
-        self.resultsTable = self.result_table(e.control.value)
+        self.resultTable = self.result_table()
+        self.page.clean()
+        self.page.add(
+            self.result_table(),
+        )
         self.page.update()
 
     def deleteResults(self, e):
         self.results.deleteResults(self.selectedDate)
 
-    def build(self):
-        self.resultsTable = self.result_table(self.selectedDate)
-
-        return Column(
-            alignment=MainAxisAlignment.START,
-            # horizontal_alignment=CrossAxisAlignment.START,
-            # scroll=ScrollMode.AUTO,
-            controls=[
-                Row(
-                    alignment=alignment.center_left,
-                    controls=[
-                        Text(
-                            "Trainingsdatum",
+    def result_table(self):
+        self.resultRows = self.result_rows(self.selectedDate)
+        self.resultTable = Column(
+                alignment=MainAxisAlignment.START,
+                controls=[
+                    Row(
+                        alignment=alignment.center_left,
+                        controls=[
+                            Text(
+                                "Trainingsdatum",
+                                size=16,
+                                weight=FontWeight.BOLD,
+                                bgcolor=colors.WHITE,
+                                color=colors.BLUE,
+                            ),
+                            Dropdown(
+                                value=self.selectedDate,
+                                width=170,
+                                options=self.dropDownOptions,
+                                on_change=self.setDate
+                            )
+                        ],
+                    ),
+                    Divider(
+                        color=colors.BLUE,
+                        thickness=1,
+                    ),
+                    DataTable(
+                        bgcolor=colors.WHITE,
+                        border_radius=10,
+                        vertical_lines=border.BorderSide(1, colors.BLACK12),
+                        horizontal_lines=border.BorderSide(1, colors.BLACK12),
+                        sort_column_index=0,
+                        sort_ascending=True,
+                        heading_text_style=TextStyle(
                             size=16,
                             weight=FontWeight.BOLD,
-                            bgcolor=colors.WHITE,
-                            color=colors.BLUE,
+                            color=colors.BLACK,
                         ),
-                        Dropdown(
-                            value=self.selectedDate,
-                            width=170,
-                            options=self.dropDownOptions,
-                            on_change=self.setDate
-                        )
-                    ]
-                ),
-                Divider(
-                    color=colors.BLUE,
-                    thickness=1,
-                ),
-                self.resultsTable,
-                Divider(
-                    color=colors.BLUE,
-                    thickness=1,
-                ),
-                Row(
-                    alignment=MainAxisAlignment.END,
-                    controls=[
-                        Container(expand=1),
-                        Container(
-                            padding=5,
-                            bgcolor=colors.RED,
-                            content=OutlinedButton(
-                                text="Delete selected\nresult set",
-                                on_click=self.deleteResults,
-                                opacity=0.5,
+                        heading_row_color=colors.BLACK12,
+                        heading_row_height=50,
+                        data_row_height=40,
+                        data_text_style=TextStyle(
+                            size=14,
+                            weight=FontWeight.NORMAL,
+                            color=colors.BLACK,
+                        ),
+                        divider_thickness=1,
+                        column_spacing=30,
+                        columns=self.resultColumns,
+                        rows=self.resultRows,
+                    ),
+                    Divider(
+                        color=colors.BLUE,
+                        thickness=1,
+                    ),
+                    Row(
+                        alignment=MainAxisAlignment.END,
+                        controls=[
+                            Container(expand=1),
+                            Container(
+                                padding=5,
+                                bgcolor=colors.TRANSPARENT,
+                                content=OutlinedButton(
+                                    text="Delete selected\nresult set",
+                                    on_click=self.deleteResults,
+                                    opacity=1.0,
+                                )
                             )
-                        )
-                    ]
-                )
-            ]
-        )
+                        ]
+                    )
+                ]
+            )
+
+        return self.resultTable
+
+    def build(self):
+        return self.result_table()
