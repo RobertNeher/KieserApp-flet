@@ -30,4 +30,7 @@ It is similar to a R/O database maintained by "model classes" (see below).
 | Machines.json | All machines available in Kieseer studios with all their descriptive data, and parameters for setup of the machine before exercise starts. |
 | Plans.json | Defines the machines assigned to customer including the settings for each machine's parameters and datails about movement defined by Kieser instructor.<br/>
 
+# Development plan
+Basing upon release v0.1
+
 
