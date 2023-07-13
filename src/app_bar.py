@@ -53,6 +53,6 @@ def kieserAppBar(page:Page, title, backRoute):
                         on_click=openAbout
                     ),
                 ]
-            )
-        ]
+            ) 
+        ] if page.route != "/login" else None
     )
