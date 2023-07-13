@@ -87,9 +87,8 @@ class Result:
         if ymdDateString != "Alle":
             SQLCommand += f" WHERE training_date LIKE '{ymdDateString}%'"
 
-        print(SQLCommand)            
-        # self.db.connection.execute(SQLCommand)
-        # self.db.connection.commit()
+        self.db.connection.execute(SQLCommand)
+        self.db.connection.commit()
 
 
     def saveResults(self, machineID, duration, weightDone, weightPlanned):
