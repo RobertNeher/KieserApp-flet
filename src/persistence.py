@@ -257,4 +257,9 @@ class DBConnection:
 #------------------------ MAIN ------------------------#
 if __name__ == "__main__":
     db = DBConnection(initialize=True)
-    print("Initilization done")
+    db.connection.execute(f"""
+            DELETE FROM {RESULT_TABLE}
+                WHERE training_date LIKE '2023-06-25%'
+    """)
+    db.connection.commit()
+

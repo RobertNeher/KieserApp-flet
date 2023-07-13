@@ -17,6 +17,7 @@ from flet import (
     OutlinedButton,
     Row,
     ScrollMode,
+    SnackBar,
     Text,
     TextStyle,
     UserControl,
@@ -25,6 +26,7 @@ from flet import (
     colors,
     dropdown
 )
+from src.confirm import ConfirmDialog
 from model.result import Result
 
 class TrainingsOverview(UserControl):
@@ -35,6 +37,11 @@ class TrainingsOverview(UserControl):
         self.results = Result(customer_id=self.customerID)
         self.dropDownOptions = []
         self.trainingDates = self.results.trainingdates(latest=False)
+        self.confirmDialog = ConfirmDialog(page=self.page, confirmed_action=self.delete_record)
+        self.page.snack_bar = SnackBar(
+            content=Text(""),
+            bgcolor=colors.RED
+        )
 
         if len(self.trainingDates) > 0:
             for trainingDate in self.trainingDates:
@@ -118,8 +125,19 @@ class TrainingsOverview(UserControl):
         )
         self.page.update()
 
+    def delete_record(self, e):
+        self.results.deleteResults(self.formatDate(self.selectedDate))
+        self.confirmDialog.close_dialog(e)
+        self.page.snack_bar.content=Text(
+            f"Trainingsresultate vom {self.selectedDate} gelöscht!",
+            color=colors.WHITE,
+            weight=FontWeight.BOLD,
+            size=14
+        )
+        self.page.snack_bar.open = True
+
     def deleteResults(self, e):
-        self.results.deleteResults(self.selectedDate)
+        self.confirmDialog.open_confirm_dialog()
 
     def result_table(self):
         self.resultRows = self.result_rows(self.selectedDate)

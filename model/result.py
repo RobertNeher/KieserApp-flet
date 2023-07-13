@@ -82,11 +82,13 @@ class Result:
             return None
 
     def deleteResults(self, ymdDateString):
-        print(ymdDateString)
-        # self.db.connection.execute(f"""
-        #         DELETE FROM {src.persistence.RESULT_TABLE}
-        #          {f"WHERE training_date LIKE '{ymdDateString}%'" if ymdDateString != "Alle" else ""}
-        # """)
+        SQLCommand = f"DELETE FROM {src.persistence.RESULT_TABLE}"
+
+        if ymdDateString != "Alle":
+            SQLCommand += f" WHERE training_date LIKE '{ymdDateString}%'"
+
+        print(SQLCommand)            
+        # self.db.connection.execute(SQLCommand)
         # self.db.connection.commit()
 
 

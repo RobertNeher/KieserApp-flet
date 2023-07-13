@@ -9,36 +9,31 @@ from flet import (
 )
 
 class ConfirmDialog(UserControl):
-    def __init__(self):
+    def __init__(self, page, confirmed_action):
         super().__init__()
+        self.page = page
+        self.action = confirmed_action
 
-        self.dlg = AlertDialog(
-            title=Text("Bitte Löschen bestätigen")
-        )
-
-        self.dlg_modal = AlertDialog(
+        self.confirm_dialog = AlertDialog(
             modal=True,
             title=Text("Bitte bestätige das Löschen"),
-            content=Text("Möchten die ausgewählten Trainingsresultate löschen?"),
+            content=Text("Möchtest du den ausgewählte Trainingsresultat löschen?"),
             actions=[
-                TextButton("Ja", on_click=self.close_dlg),
-                TextButton("Nein", on_click=self.close_dlg),
+                TextButton("Ja", on_click=self.action),
+                TextButton("Nein", on_click=self.close_dialog),
+                TextButton("Abbrechen", on_click=self.close_dialog)
             ],
             actions_alignment=MainAxisAlignment.END,
         )
 
-    def open_dlg(self, e):
-        self.page.dialog = self.dlg
-        self.dlg.open = True
+    def close_dialog(self, e):
+        self.confirm_dialog.open = False
         self.page.update()
 
-    def open_dlg_modal(self, e):
-        self.page.dialog = self.dlg_modal
-        self.dlg_modal.open = True
+    def open_confirm_dialog(self):
+        self.page.dialog = self.confirm_dialog
+        self.confirm_dialog.open = True
         self.page.update()
 
     def build(self):
-        self.page.add(
-            ElevatedButton("Open dialog", on_click=self.open_dlg),
-            ElevatedButton("Open modal dialog", on_click=self.open_dlg_modal),
-        )
+        self.open_confirm_dialog()
