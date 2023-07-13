@@ -17,12 +17,12 @@ from src.machine_tab_content import MachineTabContent
 from src.helper import extract_list
 
 class TrainingsPlan(UserControl):
-    def __init__(self, page, customer_id):
+    def __init__(self, page, customerID):
         super().__init__()
-        self.customer_id = customer_id
+        self.customerID = customerID
         self.machineTabs = []
-        self.plan = Plan(customer_id=customer_id)
-        self.results = Result(customer_id=customer_id)
+        self.plan = Plan(customerID=customerID)
+        self.results = Result(customerID=customerID)
         self.page = page
         self.prefs = Preferences()
         self.tabs = []
@@ -61,7 +61,7 @@ class TrainingsPlan(UserControl):
                     padding=10,
                     bgcolor=colors.BLACK,
                     content=MachineTabContent(
-                        customerID = self.customer_id,
+                        customerID = self.customerID,
                         machineID=machine["machine_id"],
                         parameters=parameters,
                         parameterValues=values,
@@ -94,7 +94,7 @@ class TrainingsPlan(UserControl):
 
 #-------------------------- TEST -------------------------#
 # if __name__ == "__main__":
-#     plan = TrainingsPlan(page=Page(), customer_id=19711)
+#     plan = TrainingsPlan(page=Page(), customerID=19711)
 
 #     print(plan.machines)
 #     print(plan.plan)

@@ -1,9 +1,4 @@
-import os
-import sys
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../model')))
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
-
-import persistence
+from src import persistence
 
 class Preferences:
     def __init__(self):
@@ -12,7 +7,7 @@ class Preferences:
 
         result = pref_row.fetchone()
 
-        self.customer_id = result[0]
+        self.customerID = result[0]
         self.duration = int(result[1])
         self.auto_forward = result[2] == 1
 
@@ -31,7 +26,7 @@ class Preferences:
                                     auto_forward
                                 )
                                 VALUES (
-                                    {self.customer_id},
+                                    {self.customerID},
                                     {self.duration},
                                     {self.auto_forward}
                                 )"""

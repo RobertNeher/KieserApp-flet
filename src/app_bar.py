@@ -20,6 +20,9 @@ def kieserAppBar(page:Page, title, backRoute):
     def openTrainingsOverview(e):
         page.go("/trainingsOverview")
         page.update()
+    def openTrainingsPlanOverview(e):
+        page.go("/trainingsPlanOverview")
+        page.update()
     def openAbout(e):
         page.go("/about")
         page.update()
@@ -43,6 +46,10 @@ def kieserAppBar(page:Page, title, backRoute):
                     PopupMenuItem(
                         text="Einstellungen",
                         on_click=openEditPreferences
+                    ),
+                    PopupMenuItem(
+                        text="Trainingspläne\nbearbeiten",
+                        on_click=openTrainingsPlanOverview
                     ),
                     PopupMenuItem(
                         text="Trainings-\nübersicht",

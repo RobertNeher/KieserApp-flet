@@ -3,8 +3,8 @@ from datetime import datetime
 import src.persistence
 
 class Result:
-    def __init__(self, customer_id):
-        self.customer_id = customer_id
+    def __init__(self, customerID):
+        self.customerID = customerID
         self.timeStamp = datetime.today().strftime("%Y-%m-%d")
 
         self.db = src.persistence.DBConnection(initialize=False)
@@ -13,7 +13,7 @@ class Result:
     def all(self):
         result_rows = self.db.connection.execute(f"""SELECT *
                     FROM {src.persistence.RESULT_TABLE}
-                    WHERE customer_id = {self.customer_id}
+                    WHERE customer_id = {self.customerID}
                     """)
 
         result = [dict((result_rows.description[i][0], value)
@@ -24,7 +24,7 @@ class Result:
     def trainingdates(self, latest: bool):
         result_rows = self.db.connection.execute(f"""SELECT DISTINCT training_date
                     FROM {src.persistence.RESULT_TABLE}
-                    WHERE customer_id = {self.customer_id}
+                    WHERE customer_id = {self.customerID}
                     ORDER BY training_date DESC
                     """)
 
@@ -43,7 +43,7 @@ class Result:
                     weight_done,
                     weight_planned
                     FROM {src.persistence.RESULT_TABLE}
-                    WHERE customer_id = {self.customer_id}
+                    WHERE customer_id = {self.customerID}
                     AND training_date LIKE "{trainingDate[0:10]}%"
                     ORDER BY machine_id
                     """)
@@ -62,13 +62,13 @@ class Result:
         if machine_id is None:
             result_rows = self.db.connection.execute(f"""SELECT *
                         FROM {src.persistence.RESULT_TABLE}
-                        WHERE customer_id = {self.customer_id} AND training_date = '{latest_training}'
+                        WHERE customer_id = {self.customerID} AND training_date = '{latest_training}'
                         ORDER BY machine_id
                         """)
         else:
             result_rows = self.db.connection.execute(f"""SELECT *
                         FROM {src.persistence.RESULT_TABLE}
-                        WHERE customer_id = {self.customer_id}
+                        WHERE customer_id = {self.customerID}
                         AND training_date LIKE '{latest_training}%'
                         AND machine_id = '{machine_id}'
                         """)
@@ -103,7 +103,7 @@ class Result:
                     weight_planned
                 )
                 VALUES(
-                    {self.customer_id},
+                    {self.customerID},
                     '{self.timeStamp}',
                     '{machineID}',
                     {duration},
@@ -116,6 +116,6 @@ class Result:
 
 #-------------------------- TEST -------------------------#
 if __name__ == "__main__":
-    r = Result(customer_id=19711)
+    r = Result(customerID=19711)
     print(r.latest(machine_id="F1.1"))
 

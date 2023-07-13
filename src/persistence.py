@@ -128,9 +128,9 @@ class DBConnection:
 
             self.connection.commit()
 
-    def get_customer_name(self, customer_id):
+    def get_customer_name(self, customerID):
         customers = self.connection.execute(f"""SELECT name FROM {CUSTOMER_TABLE}
-                                            WHERE customer_id = {customer_id}""")
+                                            WHERE customer_id = {customerID}""")
 
         result = customers.fetchone()
         return result[0]
@@ -209,7 +209,7 @@ class DBConnection:
 
                     for result in training["results"]:
                         self.connection.execute(f"""INSERT INTO {RESULT_TABLE} (
-                                                    customer_id,
+                                                    customerID,
                                                     training_date,
                                                     machine_id,
                                                     duration,
@@ -217,7 +217,7 @@ class DBConnection:
                                                     weight_planned
                                                 )
                                                 VALUES (
-                                                    {customer_id},
+                                                    {customerID},
                                                     "{training_date.isoformat()}",
                                                     "{result['machineID']}",
                                                     {int(result['duration'])},
@@ -227,7 +227,7 @@ class DBConnection:
 
         self.connection.commit()
 
-    def save_result(self, customer_id, training_date, machine_id, duration, weight_done, weight_planned):
+    def save_result(self, customerID, training_date, machine_id, duration, weight_done, weight_planned):
         training_date = datetime.strptime(training_date, "%Y-%m-%d")
 
         self.connection.execute(f"""INSERT INTO {RESULT_TABLE} (
@@ -239,7 +239,7 @@ class DBConnection:
                                     weight_planned
                                 )
                                 VALUES (
-                                    {customer_id},
+                                    {customerID},
                                     "{training_date.isoformat()}",
                                     "{machine_id}",
                                     {duration},

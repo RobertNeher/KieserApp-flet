@@ -32,7 +32,7 @@ class Login(UserControl):
         prefs = Preferences()
         self.page = page
         self.setCustomerID = setCustomerID
-        self.customerID = prefs.customer_id
+        self.customerID = prefs.customerID
         self.loginButton = ElevatedButton(
             "Login",
             on_click=self.loginClick,
@@ -47,7 +47,7 @@ class Login(UserControl):
             value=str(self.customerID),
             hint_text="Ihre Kieser-Kundennummer",
             on_change=self.textChange,
-            data = prefs.customer_id
+            data = prefs.customerID
         )
         self.customer = Customer(self.customerIDField.value)
         self.customerIDField.value = self.customerIDField.value

@@ -6,11 +6,11 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../s
 import persistence
 
 class Plan:
-    def __init__(self, customer_id):
+    def __init__(self, customerID):
         db = persistence.DBConnection(initialize=False)
 
         plan_rows = db.connection.execute(f"""SELECT valid_from, machine_id, machine_parameters, machine_movement, machine_comments
-                    FROM {persistence.PLAN_TABLE} WHERE customer_id="{customer_id}"
+                    FROM {persistence.PLAN_TABLE} WHERE customer_id="{customerID}"
                     AND valid_from = (SELECT MAX(valid_from) FROM {persistence.PLAN_TABLE})
                     """)
         result = [dict((plan_rows.description[i][0], value)
@@ -33,6 +33,6 @@ class Plan:
 
 #-------------------------- TEST -------------------------#
 if __name__ == "__main__":
-    p = Plan(customer_id=19711)
+    p = Plan(customerID=19711)
     print(p.plan)
     print(p.machines)

@@ -47,7 +47,7 @@ class EditPreferences(UserControl):
             focused_color=colors.BLUE,
             on_change=self.customerIDEdit,
             width=150,
-            value=self.prefs.customer_id
+            value=self.prefs.customerID
         )
 
     def routeBack(self, e):
@@ -61,7 +61,7 @@ class EditPreferences(UserControl):
         self.prefs.auto_forward = 1 if e.control.value else 0
 
     def customerIDEdit(self, e):
-        self.prefs.customer_id = e.control.value
+        self.prefs.customerID = e.control.value
 
     def saveSettings(self, e):
         self.prefs.saveSettings()

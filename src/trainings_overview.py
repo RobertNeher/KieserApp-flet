@@ -30,11 +30,11 @@ from src.confirm import ConfirmDialog
 from model.result import Result
 
 class TrainingsOverview(UserControl):
-    def __init__(self, page, customer_id):
+    def __init__(self, page, customerID):
         super().__init__()
         self.page = page
-        self.customerID = customer_id
-        self.results = Result(customer_id=self.customerID)
+        self.customerID = customerID
+        self.results = Result(customerID=self.customerID)
         self.dropDownOptions = []
         self.trainingDates = self.results.trainingdates(latest=False)
         self.confirmDialog = ConfirmDialog(page=self.page, confirmed_action=self.delete_record)

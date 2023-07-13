@@ -40,7 +40,7 @@ class MachineTabContent(UserControl):
                  autoForward):
         super().__init__()
         self.prefs = Preferences()
-        self.result = Result(customer_id=customerID)
+        self.result = Result(customerID=customerID)
         self.weightPlanned = 0 if (lastResults is None or len(lastResults) == 0) else lastResults["weight_planned"]
         self.duration = self.prefs.duration if (lastResults is None or len(lastResults) == 0) else lastResults["duration"]
         self.weightDone = 0 if (lastResults is None or len(lastResults) == 0) else lastResults["weight_done"]

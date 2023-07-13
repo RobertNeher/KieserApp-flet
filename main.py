@@ -11,6 +11,7 @@ from src.trainings_overview import TrainingsOverview
 from src.about import About
 from src.login import Login
 from src.trainings_plan import TrainingsPlan
+from edit_trainings_plan import EditTrainingsPlan
 from src.app_bar import kieserAppBar
 from src.edit_preferences import EditPreferences
 from model.preferences import Preferences
@@ -18,7 +19,7 @@ from model.preferences import Preferences
 APP_TITLE = "Dein Trainingsbegleiter"
 
 def main(page: Page):
-    customer_id = 0
+    customerid = 0
     prefs = Preferences()
     locale.setlocale(locale.LC_TIME, "de_DE")
     page.window_bgcolor = colors.BLUE_GREY_100,
@@ -40,7 +41,7 @@ def main(page: Page):
     page.route="/login"
 
     def setCustomerID(customerID):
-        customer_id = customerID
+        customerID = customerID
 
     def route_change(route):
         if page.route == "/login":
@@ -61,8 +62,7 @@ def main(page: Page):
                     "/trainingsplan",
                     [
                         kieserAppBar(page, "Dein Trainingsplan", "/login"),
-                        TrainingsPlan(page, customer_id=19711)
-                        # TrainingsOverview(page, customer_id=19711)
+                        TrainingsPlan(page, customerid=19711)
                     ]
                 )
             )
@@ -78,13 +78,24 @@ def main(page: Page):
                 )
             )
 
+        if page.route == "/trainingsPlanOverview":
+            page.views.append(
+                View(
+                    "/trainingsPlanOverview",
+                    [
+                        kieserAppBar(page, "Bearbeitung Trainingsplan", "/login"),
+                        EditTrainingsPlan(page, customerID=19711)
+                    ]
+                )
+            )
+
         if page.route == "/trainingsOverview":
             page.views.append(
                 View(
                     "/trainingsOverview",
                     [
                         kieserAppBar(page, "Letzte Trainings", "/login"),
-                        TrainingsOverview(page, customer_id=19711)
+                        TrainingsOverview(page, customerid=19711)
                     ]
                 )
             )
