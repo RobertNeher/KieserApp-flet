@@ -109,23 +109,6 @@ class MachineTabContent(UserControl):
             weightPlanned
         )
 
-
-    # # TODO: Workaround, because FloatingActionButton is not visible (0.3.2), i.e. it won't show up on top
-    # def SaveButton(self, showTab: bool):
-    #     if showTab:
-    #         return Container(
-    #              alignment=alignment.bottom_right,
-    #              content=IconButton(
-    #                     icon=icons.SAVE,
-    #                     icon_color=colors.WHITE,
-    #                     icon_size=40,
-    #                     bgcolor=colors.BLUE,
-    #                     on_click=self.saveResults,
-    #                 )
-    #         )
-    #     else:
-    #         return Container()
-
     def build(self):
         stream = base64.b64encode(self.machineDetails.machines["image"]).decode('utf-8')
         return Column(
