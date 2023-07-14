@@ -2,21 +2,16 @@ from datetime import datetime
 from flet import (
     Container,
     Column,
-    CrossAxisAlignment,
     DataCell,
     DataColumn,
     DataRow,
     DataTable,
     Divider,
     Dropdown,
-    ElevatedButton,
     FontWeight,
-    ListView,
     MainAxisAlignment,
-    MaterialState,
     OutlinedButton,
     Row,
-    ScrollMode,
     SnackBar,
     Text,
     TextStyle,
@@ -26,7 +21,7 @@ from flet import (
     colors,
     dropdown
 )
-from helper import formatDate
+from src.helper import formatDate
 from src.confirm import ConfirmDialog
 from model.result import Result
 
@@ -84,7 +79,7 @@ class TrainingsOverview(UserControl):
 
     def result_rows(self, trainingsDate):
         self.resultRows = []
-        trainingData = self.results.byDate(trainingDate=formatDate(trainingsDate))
+        trainingData = self.results.byDate(trainingDate=formatDate(dBYdate=trainingsDate))
 
         for machine in trainingData:
             self.resultRows.append(DataRow(
