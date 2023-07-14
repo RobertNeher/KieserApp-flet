@@ -26,6 +26,7 @@ from flet import (
     colors,
     dropdown
 )
+from helper import formatDate
 from src.confirm import ConfirmDialog
 from model.result import Result
 
@@ -81,12 +82,9 @@ class TrainingsOverview(UserControl):
             ),
         ]
 
-    def formatDate(self, dBYdate):
-        return datetime.strftime(datetime.strptime(dBYdate, "%d. %B %Y"), "%Y-%m-%d")
-
     def result_rows(self, trainingsDate):
         self.resultRows = []
-        trainingData = self.results.byDate(trainingDate=self.formatDate(trainingsDate))
+        trainingData = self.results.byDate(trainingDate=formatDate(trainingsDate))
 
         for machine in trainingData:
             self.resultRows.append(DataRow(
