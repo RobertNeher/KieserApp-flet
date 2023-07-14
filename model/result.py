@@ -56,10 +56,10 @@ class Result:
         else:
             return None
 
-    def latest(self, machine_id):
+    def latest(self, machineID):
         latest_training = self.trainingdates(latest=True)["training_date"]
 
-        if machine_id is None:
+        if machineID is None:
             result_rows = self.db.connection.execute(f"""SELECT *
                         FROM {src.persistence.RESULT_TABLE}
                         WHERE customer_id = {self.customerID} AND training_date = '{latest_training}'
@@ -70,14 +70,14 @@ class Result:
                         FROM {src.persistence.RESULT_TABLE}
                         WHERE customer_id = {self.customerID}
                         AND training_date LIKE '{latest_training}%'
-                        AND machine_id = '{machine_id}'
+                        AND machine_id = '{machineID}'
                         """)
 
         result = [dict((result_rows.description[i][0], value)
                for i, value in enumerate(row)) for row in result_rows.fetchall()]
 
         if len(result) > 0:
-            return result if machine_id is None else result[0]
+            return result if machineID is None else result[0]
         else:
             return None
 
@@ -117,5 +117,5 @@ class Result:
 #-------------------------- TEST -------------------------#
 if __name__ == "__main__":
     r = Result(customerID=19711)
-    print(r.latest(machine_id="F1.1"))
+    print(r.latest(machineID="F1.1"))
 

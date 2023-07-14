@@ -38,9 +38,15 @@ class TrainingsPlan(UserControl):
 
     def build(self):
         i = 0
+        planDates = self.plan.get_valid_from_dates(customerID=self.customerID)
 
-        for machine in self.plan.plan:
-            machineDetail = Machine(machine_id=machine["machine_id"])
+        if len(planDates) > 0:
+            self.latestPlan = self.plan.get_machines(customerID=self.customerID, ymdDate=planDates[0]["valid_from"])
+        else:
+            self.latestPlan = None
+
+        for machine in self.latestPlan:
+            machineDetail = Machine(machineID=machine["machine_id"])
 
             parameters = extract_list(machineDetail.machines["parameters"])
             values = extract_list(machine["machine_parameters"])
@@ -67,8 +73,8 @@ class TrainingsPlan(UserControl):
                         parameterValues=values,
                         comments=machine["machine_comments"],
                         movement=machine["machine_movement"],
-                        lastResults=self.results.latest(machine_id=machine["machine_id"]),
-                        lastTab=(i == (len(self.plan.plan) - 1)),
+                        lastResults=self.results.latest(machineID=machine["machine_id"]),
+                        lastTab=(i == (len(self.latestPlan) - 1)),
                         autoForward=self.triggerAutoForward)
                     ),
                 )

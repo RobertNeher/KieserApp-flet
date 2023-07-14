@@ -46,7 +46,7 @@ class MachineTabContent(UserControl):
         self.weightDone = 0 if (lastResults is None or len(lastResults) == 0) else lastResults["weight_done"]
         self.customerID = customerID
         self.machineID = machineID
-        self.machineDetails = Machine(machine_id=machineID)
+        self.machineDetails = Machine(machineID=machineID)
         self.parameters = parameters
         self.parameterValues = parameterValues
         self.comments = comments
