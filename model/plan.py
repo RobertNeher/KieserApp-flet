@@ -1,26 +1,10 @@
-import os
-import sys
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../model')))
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
-
 import persistence
 
 class Plan:
     def __init__(self, customerID):
-        db = persistence.DBConnection(initialize=False)
-
-        plan_rows = db.connection.execute(f"""SELECT valid_from, machine_id, machine_parameters, machine_movement, machine_comments
-                    FROM {persistence.PLAN_TABLE} WHERE customer_id="{customerID}"
-                    AND valid_from = (SELECT MAX(valid_from) FROM {persistence.PLAN_TABLE})
-                    """)
-        result = [dict((plan_rows.description[i][0], value)
-               for i, value in enumerate(row)) for row in plan_rows.fetchall()]
-
-        self.plan = (result if len(result) > 0 else None)
-
-        self.machines = []
-        for machine in self.plan:
-            self.machines.append(machine["machine_id"])
+        self.customerID = customerID
+        self.db = persistence.DBConnection(initialize=False)
+        self.latestPlan = self.get_valid_from_dates(customerID=self.customerID)[0]
 
     def machine_parameter_values(self, machineID):
         customer_machines =  self.machines
@@ -30,6 +14,37 @@ class Plan:
                     return machine["parameterValues"]
 
         return None
+
+    def get_machines(self, customerID, ymdDate):
+        machine_rows = self.db.connection.execute(f"""SELECT machine_id, machine_parameters, machine_movement, machine_comments
+                FROM {persistence.PLAN_TABLE} WHERE customer_id="{customerID}"
+                AND valid_from LIKE '{ymdDate}%'
+                """)
+        result = [dict((machine_rows.description[i][0], value)
+               for i, value in enumerate(row)) for row in machine_rows.fetchall()]
+
+        return (result if len(result) > 0 else None)
+
+    def get_valid_from_dates(self, customerID):
+        dates = self.db.connection.execute(f"""SELECT DISTINCT valid_from
+                    FROM {persistence.PLAN_TABLE} WHERE customer_id="{customerID}"
+                    ORDER BY valid_from DESC
+                    """)
+        result = [dict((dates.description[i][0], value)
+               for i, value in enumerate(row)) for row in dates.fetchall()]
+
+        return (result if len(result) > 0 else None)
+
+
+    def deletePlan(self, ymdDateString):
+        SQLCommand = f"DELETE FROM {persistence.PLAN_TABLE}"
+
+        if ymdDateString != "Alle":
+            SQLCommand += f" WHERE valid_from LIKE '{ymdDateString}%'"
+
+        self.db.connection.execute(SQLCommand)
+        self.db.connection.commit()
+
 
 #-------------------------- TEST -------------------------#
 if __name__ == "__main__":
