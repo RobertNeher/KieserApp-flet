@@ -22,11 +22,11 @@ class Plan:
         for machine in self.plan:
             self.machines.append(machine["machine_id"])
 
-    def machine_parameter_values(self, machine_id):
+    def machine_parameter_values(self, machineID):
         customer_machines =  self.machines
         if customer_machines is not None:
             for machine in self.plan:
-                if machine["machineID"] == machine_id:
+                if machine["machineID"] == machineID:
                     return machine["parameterValues"]
 
         return None
