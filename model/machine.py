@@ -1,4 +1,4 @@
-import persistence
+from src.persistence import persistence
 
 class Machine:
     def __init__(self, machineID):
