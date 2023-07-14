@@ -62,7 +62,7 @@ def main(page: Page):
                     "/trainingsplan",
                     [
                         kieserAppBar(page, "Dein Trainingsplan", "/login"),
-                        TrainingsPlan(page, customerid=19711)
+                        TrainingsPlan(page, customerID=19711)
                     ]
                 )
             )
@@ -83,7 +83,7 @@ def main(page: Page):
                 View(
                     "/trainingsPlanOverview",
                     [
-                        kieserAppBar(page, "Bearbeitung Trainingsplan", "/login"),
+                        kieserAppBar(page, "Bearbeitung Trainingspläne", "/login"),
                         EditTrainingsPlan(page, customerID=19711)
                     ]
                 )
@@ -95,7 +95,7 @@ def main(page: Page):
                     "/trainingsOverview",
                     [
                         kieserAppBar(page, "Letzte Trainings", "/login"),
-                        TrainingsOverview(page, customerid=19711)
+                        TrainingsOverview(page, customerID=19711)
                     ]
                 )
             )
