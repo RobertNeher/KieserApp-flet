@@ -33,7 +33,12 @@ class TrainingsOverview(UserControl):
         self.results = Result(customerID=self.customerID)
         self.dropDownOptions = []
         self.trainingDates = self.results.trainingdates(latest=False)
-        self.confirmDialog = ConfirmDialog(page=self.page, confirmed_action=self.delete_record)
+        self.confirmDialog = ConfirmDialog(
+            page=self.page,
+            title="Bitte bestätige das Löschen",
+            question= "Möchtest du das ausgewählte Trainingsresultat löschen?",
+            confirmed_action=self.delete_record
+        )
         self.page.snack_bar = SnackBar(
             content=Text(""),
             bgcolor=colors.RED

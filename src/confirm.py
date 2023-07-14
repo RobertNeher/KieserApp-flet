@@ -9,15 +9,17 @@ from flet import (
 )
 
 class ConfirmDialog(UserControl):
-    def __init__(self, page, confirmed_action):
+    def __init__(self, page, title, question, confirmed_action):
         super().__init__()
         self.page = page
         self.action = confirmed_action
+        self.title = title
+        self.question = question
 
         self.confirm_dialog = AlertDialog(
             modal=True,
-            title=Text("Bitte bestätige das Löschen"),
-            content=Text("Möchtest du den ausgewählte Trainingsresultat löschen?"),
+            title=Text(self.title),
+            content=Text(self.question),
             actions=[
                 TextButton("Ja", on_click=self.action),
                 TextButton("Nein", on_click=self.close_dialog),
