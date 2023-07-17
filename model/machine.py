@@ -4,7 +4,7 @@ class Machine:
     def __init__(self, machineID):
         self.machineID = machineID
         self.db = persistence.DBConnection(initialize=False)
-        
+
         machine_rows = self.db.connection.execute(f"""SELECT *
                     FROM {persistence.MACHINE_TABLE}
                     {f"WHERE name = '{machineID}'" if machineID is not None else ""}
@@ -20,4 +20,3 @@ class Machine:
 #-------------------------- TEST -------------------------#
 if __name__ == "__main__":
     m = Machine("D5")
-    print(m.get_machine_detail())
