@@ -19,7 +19,7 @@ from model.preferences import Preferences
 APP_TITLE = "Dein Trainingsbegleiter"
 
 def main(page: Page):
-    customerid = 0
+    customerID = 0
     prefs = Preferences()
     locale.setlocale(locale.LC_TIME, "de_DE")
     page.window_bgcolor = colors.BLUE_GREY_100,
@@ -38,12 +38,13 @@ def main(page: Page):
     page.window_max_width=500
     page.window_height=1000
     page.window_width=500
-    page.route="/login"
+    page.route="/trainingsPlanOverview"
 
-    def setCustomerID(customerID):
-        customerID = customerID
+
 
     def route_change(route):
+        customerID = prefs.customerID
+
         if page.route == "/login":
             page.views.clear()
             page.views.append(
@@ -62,7 +63,7 @@ def main(page: Page):
                     "/trainingsplan",
                     [
                         kieserAppBar(page, "Dein Trainingsplan", "/login"),
-                        TrainingsPlan(page, customerID=19711)
+                        TrainingsPlan(page, customerID=customerID)
                     ]
                 )
             )
@@ -84,7 +85,7 @@ def main(page: Page):
                     "/trainingsPlanOverview",
                     [
                         kieserAppBar(page, "Bearbeitung Trainingspläne", "/login"),
-                        EditTrainingsPlan(page, customerID=19711)
+                        EditTrainingsPlan(page, customerID=customerID)
                     ]
                 )
             )
@@ -95,7 +96,7 @@ def main(page: Page):
                     "/trainingsOverview",
                     [
                         kieserAppBar(page, "Letzte Trainings", "/login"),
-                        TrainingsOverview(page, customerID=19711)
+                        TrainingsOverview(page, customerID=customerID)
                     ]
                 )
             )

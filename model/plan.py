@@ -6,14 +6,14 @@ class Plan:
         self.db = persistence.DBConnection(initialize=False)
         self.latestPlan = self.get_valid_from_dates(customerID=self.customerID)[0]
 
-    def machine_parameter_values(self, machineID):
-        customer_machines =  self.machines
-        if customer_machines is not None:
-            for machine in self.plan:
-                if machine["machineID"] == machineID:
-                    return machine["parameterValues"]
+    # def machine_parameter_values(self, machineID):
+    #     customer_machines =  self.machines
+    #     if customer_machines is not None:
+    #         for machine in self.plan:
+    #             if machine["machineID"] == machineID:
+    #                 return machine["parameterValues"]
 
-        return None
+    #     return None
 
     def get_machines(self, customerID, ymdDate):
         machine_rows = self.db.connection.execute(f"""SELECT machine_id, machine_parameters, machine_movement, machine_comments

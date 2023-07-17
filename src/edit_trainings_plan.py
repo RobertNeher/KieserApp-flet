@@ -9,9 +9,9 @@ from flet import (
     Divider,
     Dropdown,
     FontWeight,
+    IconButton,
     MainAxisAlignment,
     OutlinedButton,
-    Page,
     Row,
     SnackBar,
     Text,
@@ -21,11 +21,15 @@ from flet import (
     border,
     colors,
     dropdown,
+    icons
 )
 from src.confirm import ConfirmDialog
 from src.helper import extract_list, formatDate
 from model.machine import Machine
 from model.plan import Plan
+
+PARAMETER_ROW_HEIGHT = 40
+
 
 class EditTrainingsPlan(UserControl):
     def __init__(self, page, customerID):
@@ -45,6 +49,7 @@ class EditTrainingsPlan(UserControl):
             content=Text(""),
             bgcolor=colors.RED
         )
+        self.planTable = Container()
 
         if len(self.trainingDates) > 0:
             for plan_date in self.trainingDates:
@@ -55,6 +60,7 @@ class EditTrainingsPlan(UserControl):
 
             self.selectedDate = self.dropDownOptions[0].key
             self.planRows = []
+            self.parameterCount = 0
         else:
             self.dropDownOptions.append(dropdown.Option("<Keine Daten>"))
 
@@ -65,19 +71,19 @@ class EditTrainingsPlan(UserControl):
                 )
             ),
             DataColumn(
-                numeric=True,
+                # numeric=True,
                 label=Text(
                     "Parameter",
                 )
             ),
             DataColumn(
-                numeric=True,
+                # numeric=True,
                 label=Text(
                     "Bewegung",
                 )
             ),
             DataColumn(
-                numeric=True,
+                # numeric=True,
                 label=Text(
                     "Hinweise",
                 )
@@ -87,13 +93,13 @@ class EditTrainingsPlan(UserControl):
         self.ParameterTableColumns = [
             DataColumn(
                 label=Text(
-                    "Parameter",
+                    "P",
                 )
             ),
             DataColumn(
                 numeric=True,
                 label=Text(
-                    "Einstellung",
+                    "E",
                 )
             ),
         ]
@@ -101,8 +107,9 @@ class EditTrainingsPlan(UserControl):
     def plan_rows(self):
         self.planRows = []
 
-        for machine in self.trainingPlans.get_machines(self.customerID, self.selectedDate):
+        for machine in self.trainingPlans.get_machines(self.customerID, formatDate(self.selectedDate)):
             self.planRows.append(DataRow(
+
                 cells=[
                     DataCell(
                         content=Text(
@@ -127,12 +134,24 @@ class EditTrainingsPlan(UserControl):
 
         return self.planRows
 
+    # def ParameterTable(self, machineID, settings):
+    #     machine = Machine(machineID=machineID)
+    #     parameterNames = extract_list(machine.machines["parameters"])
+    #     parameterValues = extract_list(settings)
+    #     parameters = ""
+
+    #     for i in range(0, len(parameterNames)):
+    #         parameters += "%-8s|%5s" % (parameterNames[i], parameterValues[i])
+    #         parameters += "\n" if i < len(parameterNames) - 1 else ""
+
+    #     return Text(parameters)
+
     def ParameterTable(self, machineID, settings):
         machine = Machine(machineID=machineID)
         parameterRows = []
 
-        parameterNames = extract_list(machine["parameters"])
-        parameterSettings= extract_list(settings)
+        parameterNames = extract_list(machine.machines["parameters"])
+        parameterValues = extract_list(settings)
 
         for i in range(0, len(parameterNames)):
             parameterRows.append(
@@ -142,33 +161,32 @@ class EditTrainingsPlan(UserControl):
                             content=Text(parameterNames[i])
                         ),
                         DataCell(
-                            content=Text(parameterSettings[i])
+                            content=Text(parameterValues[i])
                         ),
                     ]
                 )
             )
 
         return DataTable(
+            column_spacing=0,
             heading_row_height=0,
-            data_row_height=45,
+            data_row_height=PARAMETER_ROW_HEIGHT,
             data_text_style=TextStyle(
                 size = 12,
                 weight = FontWeight.NORMAL,
                 color=colors.BLACK
             ),
             bgcolor=colors.TRANSPARENT,
-            vertical_lines=border.BorderSide(1, colors.BLACK12),
-            horizontal_lines=border.BorderSide(1, colors.BLACK12),
+            # vertical_lines=border.BorderSide(1, colors.BLACK12),
+            # horizontal_lines=border.BorderSide(1, colors.BLACK12),
             sort_column_index=0,
             sort_ascending=True,
-            rows=self.planRows,
-            columns=self.planColumns,
+            rows=parameterRows,
+            columns=self.ParameterTableColumns,
         )
 
     def setDate(self, e):
-        self.selectedDate = e.control.value
-        print(self.selectedDate)
-        self.planTable = self.plan_table()
+        self.selectedDate = formatDate(e.control.value)
         self.page.clean()
         self.page.add(
             self.plan_table(),
@@ -176,7 +194,7 @@ class EditTrainingsPlan(UserControl):
         self.page.update()
 
     def delete_record(self, e):
-        self.trainingPlans.deletePlan(ymdDateString=self.formatDate(self.selectedDate))
+        self.trainingPlans.deletePlan(ymdDateString=self.selectedDate)
         self.confirmDialog.close_dialog(e)
         self.page.snack_bar.content=Text(
             f"Trainingsplan vom {self.selectedDate} gelöscht!",
@@ -189,8 +207,49 @@ class EditTrainingsPlan(UserControl):
     def deletePlan(self, e):
         self.confirmDialog.open_confirm_dialog()
 
+    def newPlan(self, e):
+        print("new plan")
+
+    def copyPlan(self, e):
+        print("copy plan")
+
     def plan_table(self):
         self.planTable = Column(
+            alignment=MainAxisAlignment.START,
+            controls=[
+
+                DataTable(
+                    bgcolor=colors.WHITE,
+                    border_radius=10,
+                    vertical_lines=border.BorderSide(1, colors.BLACK12),
+                    horizontal_lines=border.BorderSide(1, colors.BLACK12),
+                    sort_column_index=0,
+                    sort_ascending=True,
+                    heading_text_style=TextStyle(
+                        size=16,
+                        weight=FontWeight.BOLD,
+                        color=colors.BLACK,
+                    ),
+                    heading_row_color=colors.BLACK12,
+                    heading_row_height=50,
+                    # data_row_height=40,
+                    data_text_style=TextStyle(
+                        size=14,
+                        weight=FontWeight.NORMAL,
+                        color=colors.BLACK,
+                    ),
+                    divider_thickness=1,
+                    column_spacing=30,
+                    columns=self.planColumns,
+                    rows=self.plan_rows(),
+                ),
+            ]
+        )
+
+        return self.planTable
+
+    def build(self):
+        return Column(
             alignment=MainAxisAlignment.START,
             controls=[
                 Row(
@@ -215,54 +274,33 @@ class EditTrainingsPlan(UserControl):
                     color=colors.BLUE,
                     thickness=1,
                 ),
-                DataTable(
-                    bgcolor=colors.WHITE,
-                    border_radius=10,
-                    vertical_lines=border.BorderSide(1, colors.BLACK12),
-                    horizontal_lines=border.BorderSide(1, colors.BLACK12),
-                    sort_column_index=0,
-                    sort_ascending=True,
-                    heading_text_style=TextStyle(
-                        size=16,
-                        weight=FontWeight.BOLD,
-                        color=colors.BLACK,
-                    ),
-                    heading_row_color=colors.BLACK12,
-                    heading_row_height=50,
-                    data_row_height=40,
-                    data_text_style=TextStyle(
-                        size=14,
-                        weight=FontWeight.NORMAL,
-                        color=colors.BLACK,
-                    ),
-                    divider_thickness=1,
-                    column_spacing=30,
-                    columns=self.planColumns,
-                    rows=self.plan_rows(),
-                ),
+                Container(
+                    height=50,
+                    content=Row(
+                    alignment=MainAxisAlignment.SPACE_EVENLY,
+                    scroll=True,
+                    controls=[
+                        IconButton(
+                            icon=icons.ADD,
+                            on_click=self.newPlan,
+                            tooltip="Neuen Plan erstellen",
+                        ),
+                        IconButton(
+                            icon=icons.COPY_ALL,
+                            on_click=self.copyPlan,
+                            tooltip="Aktuellen Plan kopieren"
+                        ),
+                        IconButton(
+                            icon=icons.DELETE_FOREVER,
+                            on_click=self.deletePlan,
+                            tooltip="Aktuellen Plan löschen"
+                        ),
+                    ]
+                )),
                 Divider(
                     color=colors.BLUE,
                     thickness=1,
                 ),
-                Row(
-                    alignment=MainAxisAlignment.END,
-                    controls=[
-                        Container(expand=1),
-                        Container(
-                            padding=5,
-                            bgcolor=colors.TRANSPARENT,
-                            content=OutlinedButton(
-                                text="Löschen dieses\n Trainingplans",
-                                on_click=self.deletePlan,
-                                opacity=1.0,
-                            )
-                        )
-                    ]
-                )
+                self.plan_table(),
             ]
         )
-
-        return self.planTable
-
-    def build(self):
-        return self.plan_table()
