@@ -186,7 +186,7 @@ class EditTrainingsPlan(UserControl):
         )
 
     def setDate(self, e):
-        self.selectedDate = formatDate(e.control.value)
+        self.selectedDate = e.control.value
         self.page.clean()
         self.page.add(
             self.plan_table(),
