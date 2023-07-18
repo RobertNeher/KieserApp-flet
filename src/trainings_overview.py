@@ -8,6 +8,7 @@ from flet import (
     DataTable,
     Divider,
     Dropdown,
+    IconButton,
     FontWeight,
     MainAxisAlignment,
     OutlinedButton,
@@ -19,7 +20,8 @@ from flet import (
     alignment,
     border,
     colors,
-    dropdown
+    dropdown,
+    icons
 )
 from src.helper import formatDate
 from src.confirm import ConfirmDialog
@@ -84,7 +86,7 @@ class TrainingsOverview(UserControl):
 
     def result_rows(self, trainingsDate):
         self.resultRows = []
-        trainingData = self.results.byDate(trainingDate=formatDate(dBYdate=trainingsDate))
+        trainingData = self.results.byDate(trainingDate=formatDate(dateString=trainingsDate))
 
         for machine in trainingData:
             self.resultRows.append(DataRow(
@@ -164,6 +166,24 @@ class TrainingsOverview(UserControl):
                         color=colors.BLUE,
                         thickness=1,
                     ),
+                    Container(
+                        height=50,
+                        content=Row(
+                        alignment=MainAxisAlignment.SPACE_EVENLY,
+                        scroll=True,
+                        controls=[
+                            IconButton(
+                                icon=icons.DELETE_FOREVER,
+                                on_click=self.deleteResults,
+                                tooltip="Aktuelles Trainingsreultat löschen"
+                            ),
+                        ]
+                    )),
+                    Divider(
+                        color=colors.BLUE,
+                        thickness=1,
+                    ),
+
                     DataTable(
                         bgcolor=colors.WHITE,
                         border_radius=10,
@@ -189,25 +209,6 @@ class TrainingsOverview(UserControl):
                         columns=self.resultColumns,
                         rows=self.resultRows,
                     ),
-                    Divider(
-                        color=colors.BLUE,
-                        thickness=1,
-                    ),
-                    Row(
-                        alignment=MainAxisAlignment.END,
-                        controls=[
-                            Container(expand=1),
-                            Container(
-                                padding=5,
-                                bgcolor=colors.TRANSPARENT,
-                                content=OutlinedButton(
-                                    text="Delete selected\nresult set",
-                                    on_click=self.deleteResults,
-                                    opacity=1.0,
-                                )
-                            )
-                        ]
-                    )
                 ]
             )
 
