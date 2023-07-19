@@ -40,7 +40,8 @@ def main(page: Page):
     page.window_width=500
     page.route="/trainingsPlanOverview"
 
-
+    def setCustomerID(e, customer_id):
+        customerID = customer_id
 
     def route_change(route):
         customerID = prefs.customerID

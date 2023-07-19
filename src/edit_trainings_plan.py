@@ -10,8 +10,8 @@ from flet import (
     Dropdown,
     FontWeight,
     IconButton,
+    ListView,
     MainAxisAlignment,
-    OutlinedButton,
     Row,
     SnackBar,
     Text,
@@ -71,19 +71,16 @@ class EditTrainingsPlan(UserControl):
                 )
             ),
             DataColumn(
-                # numeric=True,
                 label=Text(
                     "Parameter",
                 )
             ),
             DataColumn(
-                # numeric=True,
                 label=Text(
                     "Bewegung",
                 )
             ),
             DataColumn(
-                # numeric=True,
                 label=Text(
                     "Hinweise",
                 )
@@ -109,7 +106,6 @@ class EditTrainingsPlan(UserControl):
 
         for machine in self.trainingPlans.get_machines(self.customerID, formatDate(self.selectedDate)):
             self.planRows.append(DataRow(
-
                 cells=[
                     DataCell(
                         content=Text(
@@ -117,7 +113,7 @@ class EditTrainingsPlan(UserControl):
                         ),
                     ),
                     DataCell(
-                        content=self.ParameterTable(machine["machine_id"], machine["machine_parameters"]),
+                        content=self.ParameterTable(machineID=machine["machine_id"], settings=machine["machine_parameters"]),
                     ),
                     DataCell(
                         content=Text(
@@ -134,21 +130,13 @@ class EditTrainingsPlan(UserControl):
 
         return self.planRows
 
-    # def ParameterTable(self, machineID, settings):
-    #     machine = Machine(machineID=machineID)
-    #     parameterNames = extract_list(machine.machines["parameters"])
-    #     parameterValues = extract_list(settings)
-    #     parameters = ""
-
-    #     for i in range(0, len(parameterNames)):
-    #         parameters += "%-8s|%5s" % (parameterNames[i], parameterValues[i])
-    #         parameters += "\n" if i < len(parameterNames) - 1 else ""
-
-    #     return Text(parameters)
-
     def ParameterTable(self, machineID, settings):
         machine = Machine(machineID=machineID)
         parameterRows = []
+        # parameterView = ListView(padding=0, divider_thickness=0, auto_scroll=True)
+        parameterView = Column(
+            scroll=True
+        )
 
         parameterNames = extract_list(machine.machines["parameters"])
         parameterValues = extract_list(settings)
@@ -167,23 +155,24 @@ class EditTrainingsPlan(UserControl):
                 )
             )
 
-        return DataTable(
-            column_spacing=0,
-            heading_row_height=0,
-            data_row_height=PARAMETER_ROW_HEIGHT,
-            data_text_style=TextStyle(
-                size = 12,
-                weight = FontWeight.NORMAL,
-                color=colors.BLACK
-            ),
-            bgcolor=colors.TRANSPARENT,
-            # vertical_lines=border.BorderSide(1, colors.BLACK12),
-            # horizontal_lines=border.BorderSide(1, colors.BLACK12),
-            sort_column_index=0,
-            sort_ascending=True,
-            rows=parameterRows,
-            columns=self.ParameterTableColumns,
+        parameterView.controls.append(
+            DataTable(
+                column_spacing=0,
+                heading_row_height=0,
+                data_row_height=PARAMETER_ROW_HEIGHT,
+                data_text_style=TextStyle(
+                    size = 12,
+                    weight = FontWeight.NORMAL,
+                    color=colors.BLACK
+                ),
+                bgcolor=colors.TRANSPARENT,
+                sort_column_index=0,
+                sort_ascending=True,
+                rows=parameterRows,
+                columns=self.ParameterTableColumns,
+            )
         )
+        return parameterView
 
     def setDate(self, e):
         self.selectedDate = e.control.value
@@ -210,8 +199,8 @@ class EditTrainingsPlan(UserControl):
     def newPlan(self, e):
         print("new plan")
 
-    def copyPlan(self, e):
-        print("copy plan")
+    def duplicatePlan(self, e):
+        print("duplicate plan")
 
     def plan_table(self):
         self.planTable = Column(
@@ -287,8 +276,8 @@ class EditTrainingsPlan(UserControl):
                         ),
                         IconButton(
                             icon=icons.COPY_ALL,
-                            on_click=self.copyPlan,
-                            tooltip="Aktuellen Plan kopieren"
+                            on_click=self.duplicatePlan,
+                            tooltip="Aktuellen Plan duplizieren"
                         ),
                         IconButton(
                             icon=icons.DELETE_FOREVER,
