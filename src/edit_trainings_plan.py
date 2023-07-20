@@ -23,12 +23,13 @@ from flet import (
     dropdown,
     icons
 )
+from src.editor import EditPlanMachine
 from src.confirm import ConfirmDialog
 from src.helper import extract_list, formatDate
 from model.machine import Machine
 from model.plan import Plan
 
-PARAMETER_ROW_HEIGHT = 40
+PARAMETER_ROW_HEIGHT = 20
 
 
 class EditTrainingsPlan(UserControl):
@@ -101,6 +102,9 @@ class EditTrainingsPlan(UserControl):
             ),
         ]
 
+    def handleSelection(self, e):
+        EditPlanMachine(page=self.page, fields=e.control.cells)
+
     def plan_rows(self):
         self.planRows = []
 
@@ -118,14 +122,17 @@ class EditTrainingsPlan(UserControl):
                     DataCell(
                         content=Text(
                             machine["machine_movement"],
+                            size=11,
                         ),
                     ),
                     DataCell(
                         content=Text(
                             machine["machine_comments"],
+                            size=11
                         ),
                     )
-                ]
+                ],
+                on_select_changed=self.handleSelection
             ))
 
         return self.planRows
@@ -157,17 +164,23 @@ class EditTrainingsPlan(UserControl):
 
         parameterView.controls.append(
             DataTable(
+                horizontal_margin=2,
                 column_spacing=0,
                 heading_row_height=0,
+                divider_thickness=0,
                 data_row_height=PARAMETER_ROW_HEIGHT,
                 data_text_style=TextStyle(
-                    size = 12,
+                    size = 11,
                     weight = FontWeight.NORMAL,
                     color=colors.BLACK
                 ),
                 bgcolor=colors.TRANSPARENT,
                 sort_column_index=0,
                 sort_ascending=True,
+                border_radius=0,
+                border=None,
+                horizontal_lines=None,
+                vertical_lines=None,
                 rows=parameterRows,
                 columns=self.ParameterTableColumns,
             )
@@ -204,13 +217,15 @@ class EditTrainingsPlan(UserControl):
 
     def plan_table(self):
         self.planTable = Column(
+            scroll=True,
             alignment=MainAxisAlignment.START,
             controls=[
 
                 DataTable(
+                    checkbox_horizontal_margin=2,
+                    show_checkbox_column=True,
                     bgcolor=colors.WHITE,
                     border_radius=10,
-                    vertical_lines=border.BorderSide(1, colors.BLACK12),
                     horizontal_lines=border.BorderSide(1, colors.BLACK12),
                     sort_column_index=0,
                     sort_ascending=True,
@@ -221,7 +236,6 @@ class EditTrainingsPlan(UserControl):
                     ),
                     heading_row_color=colors.BLACK12,
                     heading_row_height=50,
-                    # data_row_height=40,
                     data_text_style=TextStyle(
                         size=14,
                         weight=FontWeight.NORMAL,
